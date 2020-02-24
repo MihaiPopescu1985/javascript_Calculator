@@ -1,6 +1,5 @@
-var firstNumber = "";
-var secondNumber = "";
-var operationSelected = false;
+var operand = ["", ""];
+var index = 0;
 var operation = "";
 
 document.getElementById("one").onclick = function() {putValue("1")};
@@ -21,13 +20,13 @@ document.getElementById("multiply").onclick = function() {setOperation("*")};
 document.getElementById("divide").onclick = function() {setOperation("/")};
 document.getElementById("reminder").onclick = function() {setOperation("reminder")};
 document.getElementById("equal").onclick = function() {equal()};
-document.getElementById("cancel").onclick = function() {reset()};
+document.getElementById("cancel").onclick = function() {resetAll()};
 document.getElementById("delete").onclick = function() {del()};
 
 function equal() {
-    if (operationSelected) {
-        firstNumber = Number(firstNumber);
-        secondNumber = Number(secondNumber);
+    if (index == 1) {
+        let firstNumber = Number(operand[0]);
+        let secondNumber = Number(operand[1]);
         let result;
 
         if (operation == "+") {
@@ -48,77 +47,55 @@ function equal() {
         if (result > 9999999999) {
             result = result.toExponential();
         }
+        reset();
         displayValue(result);
     }
 }
 
 function del() {
-    if (operationSelected) {
-        secondNumber = secondNumber.substr(0, secondNumber.length - 1);
-        displayValue(secondNumber);
-    }
-    else {
-        firstNumber = firstNumber.substr(0, firstNumber.length - 1);
-        displayValue(firstNumber);
-    }
+    operand[index] = operand[index].substr(0, operand[index].length - 1);
+    displayValue(operand[index]);
 }
 
 function setOperation(newOperation) {
-    if (!operationSelected) {
+    if (index == 0) {
+        index = 1;
         operation = newOperation;
-        operationSelected = true;
         displayValue(newOperation);
     }
 }
 
-function reset() {
-    firstNumber = "";
-    secondNumber = "";
-    operationSelected = false;
-    operation = "";
+function resetAll() {
+    reset();
     displayValue("0");
 }
 
+function reset() {
+    operand[0] = "";
+    operand[1] = "";
+    index = 0;
+    operation = "";
+}
+
 function negateValue() {
-    if (!operationSelected) {
-        if (firstNumber[0] == "-") {
-            firstNumber = firstNumber.substr(1);
-        }
-        else {
-            firstNumber = "-" + firstNumber;
-        }
-        displayValue(firstNumber);
+    if (operand[index].charAt(0) == "-") {
+        operand[index] = operand[index].substr(1);
     }
     else {
-        if (secondNumber[0] == "-") {
-            secondNumber = secondNumber.substr(1);
-        }
-        else {
-            secondNumber = "-" + secondNumber;
-        }
-        displayValue(secondNumber);
+        operand[index] = "-" + operand[index];
     }
+    displayValue(operand[index]);
 }
 
 function putValue(newValue) {
     let isdot = newValue == ".";
 
-    if (!operationSelected) {
-        if (firstNumber.length < 10) {
-            if (isdot && (firstNumber.indexOf(".") != -1)) {
-                return;
-            }
-            firstNumber += newValue;
-            displayValue(firstNumber);
+    if (operand[index].length < 10) {
+        if (isdot && (operand[index].indexOf(".") != -1)) {
+            return;
         }
-    } else {
-        if (secondNumber.length < 10) {
-            if (isdot && (secondNumber.indexOf(".") != -1)) {
-                return;
-            }
-            secondNumber += newValue;
-            displayValue(secondNumber);
-        }
+        operand[index] += newValue;
+        displayValue(operand[index]);
     }
 }
 
